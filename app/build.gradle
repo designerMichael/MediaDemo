@@ -1,0 +1,116 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'android-apt'
+
+apply plugin: 'org.greenrobot.greendao'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "25.0.0"
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+    //签名配置
+    signingConfigs {
+        release {
+            keyAlias 'gosuncn'
+            keyPassword 'gosuncn123@456'
+            storeFile file('gosuncn.jks')
+            storePassword 'gosuncn123@456'
+        }
+    }
+    //输出文件配置
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.each {
+                output ->
+                    output.outputFile = new File(output.outputFile.parent, defaultConfig.applicationId + "-" + buildType.name + "-v" + defaultConfig.versionName + "-" + defaultConfig.versionCode + ".apk");
+            }
+    }
+    defaultConfig {
+        applicationId "com.bigbang.michael.mediademo"
+        minSdkVersion 19
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        //取消单元测试
+        // testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        // Enabling multidex support.
+    //    multiDexEnabled true
+        signingConfig signingConfigs.release
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+    // 屏蔽lint的严格检查
+    lintOptions {
+        abortOnError false
+    }
+    //资源路径配置；
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            //不配置的话默认是在src/main/jniLibs,自己建立该文件夹，把so库添加即可；
+
+            jni.srcDirs = [] //disable?automatic?ndk-build?call
+
+            java.srcDirs += ['build/generated/source/greendao'] //配置greendao
+
+        }
+    }
+    //greendao数据库配置
+    greendao {
+        schemaVersion 1
+        //数据库schema版本，也可以理解为数据库版本号
+
+        daoPackage "com.bigbang.michael.mediademo"
+        //设置DaoMaster、DaoSession、Dao包名 比如 "com.gosuncn.goim.entity" 
+
+        //  targetGenDir //设置DaoMaster、DaoSession、Dao目录
+        // targetGenDirTest  //：设置生成单元测试目录
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    //butterknife
+    //multidex支持
+    // CommonUtils2
+    //rxJava,rxAndroid
+    //retrofit2,converter,
+    //gson
+    //打印log
+    //dagger2
+    //greendao
+    //eventbus
+    compile 'com.jakewharton:butterknife:8.2.1'
+   // compile 'com.android.support:multidex:1.0.1'
+    compile 'com.github.huweijian5:CommonUtil2:2.0.9'
+    compile 'io.reactivex:rxjava:1.1.0'
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.1.2'
+    compile 'com.google.dagger:dagger:2.0.2'
+    compile 'com.google.dagger:dagger-compiler:2.0.2'
+    compile 'org.greenrobot:greendao:3.1.1'
+    compile 'org.greenrobot:greendao-generator:3.1.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.android.support:appcompat-v7:24.0.0'
+    testCompile 'junit:junit:4.12'
+    apt 'com.jakewharton:butterknife-compiler:8.2.1'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
+    compile 'com.android.support:recyclerview-v7:25.0.1'
+    compile 'com.android.support:design:25.0.1'
+    compile 'com.android.support:support-v4:25.0.1'
+}
