@@ -10,13 +10,13 @@ android {
     dexOptions {
         javaMaxHeapSize "4g"
     }
-    //签名配置
+    //签名配置(举个例子)
     signingConfigs {
         release {
-            keyAlias 'gosuncn'
-            keyPassword 'gosuncn123@456'
-            storeFile file('gosuncn.jks')
-            storePassword 'gosuncn123@456'
+            keyAlias 'androiddemo'
+            keyPassword 'androiddemo123@456'
+            storeFile file('androiddemo.jks')
+            storePassword 'androiddemo123@456'
         }
     }
     //输出文件配置
